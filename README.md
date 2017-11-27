@@ -5,11 +5,11 @@ A nice, retro-feeling game of snake in which you try to eat as many slices of pi
 
 ---
 Planned Features:  
-- Menu Screen
-- Self-destruction Prevention (prevent a direction reversal)
+- Guide
+- Highscores
 - Game Over Screen
   - Input initials, save to highscore file, display score, highscores, and rank on Game Over screen
 - Powerups/Menu Options
-  - Star Mode (faster, pass through self, wrap around walls, snake flashes through colors)
+  - Star Mode (faster, pass through self, wrap around walls, snake changes color)
   - Inverse Mode (all directions are switched)
-  - Annoyance Mode (screen background and snake flash random colors and styles)
+  - Annoyance Mode (screen background changes colors, snake changes colors)
