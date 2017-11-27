@@ -4,7 +4,8 @@ A terminal-based snake game built with Python.  Must be launched from the termin
 A nice, retro-feeling game of snake in which you try to eat as many slices of pi as possible without running into yourself or the walls.
 
 ---
-Planned Features:  
+Planned Features:
+- Eating pi reveals digits of pi
 - Guide
 - Highscores
 - Game Over Screen
