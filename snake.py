@@ -6,8 +6,14 @@ import time
 screen = cs.initscr()
 cs.start_color()
 
+### Set up global variables
+rainbowsnake = False
+for i in range(1, 8):
+    cs.init_pair(i, 0, i)
 
+score = 0
 
+pi = '3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803482534211706798214808651328230664709384460955058223172535940812848111745'
 
 """ Guide """
 ### Guide Screen, txt and animations
@@ -21,7 +27,45 @@ def guide():
 """ Options """
 ### Options, allowing global variable changes
 def options():
-    pass
+    global rainbowsnake
+    screen.clear()
+    screen.addstr(1, int(cs.COLS/2) - 4, 'Options', cs.A_BOLD)
+
+    hover = 0
+
+    in_options = True
+    while in_options:
+
+        highlights = [0] * 4
+        highlights[hover] = cs.A_REVERSE
+
+        screen.addstr(int(cs.LINES/2) - 1, int(cs.COLS/2) - len('Colorful Snake') - 2,
+                          'Colorful Snake : ' + str(rainbowsnake) + ' ' * rainbowsnake, highlights[0])
+        screen.addstr(int(cs.LINES/2), int(cs.COLS/2) - 13,
+                      'Coming Soon : ', highlights[1])
+        screen.addstr(int(cs.LINES/2) + 1, int(cs.COLS/2) - 13,
+                      'Coming Soon : ', highlights[2])
+        screen.addstr(cs.LINES - 2, int(cs.COLS/2) - 4,
+                      '<- Back', highlights[3])
+
+        screen.refresh()
+
+        pressed = screen.getch()
+        if pressed == cs.KEY_UP:
+            hover = (hover - 1) %4
+        elif pressed == cs.KEY_DOWN:
+            hover = (hover + 1) %4
+        elif pressed == 27:
+            in_options = False
+            menu()
+        elif pressed == ord('\n'):
+            if hover == 0:
+                rainbowsnake = not rainbowsnake
+            if hover == 3:
+                in_options = False
+                menu()
+
+    
 """ /Options """
 
 
@@ -45,7 +89,9 @@ def gameover():
     screen.clear()
     while True:
         
-        screen.addstr(int(cs.LINES/2) - 2, int((cs.COLS - len('Game Over'))/2), 'Game Over', cs.A_BOLD)
+        screen.addstr(int(cs.LINES/2) - 2, int(cs.COLS/2) - 5, 'Game Over', cs.A_BOLD)
+        screen.addstr(int(cs.LINES/2), int(cs.COLS/2) - 13, 'You found ' + str(score) + ' digits of pi!')
+        screen.addstr(1, int(cs.COLS/2 - len(pi[0:score])/2), pi[0:score])
         
         screen.refresh()
 
@@ -66,6 +112,7 @@ def gameover():
 """ Game """
 ### Game Definition
 def game():
+    global score
 
     ### Setting up my Window
     ylim, xlim = cs.LINES - 2, cs.COLS - 4  #setting our window limits
@@ -96,12 +143,6 @@ def game():
     # Adding dictionary object to map each direction to an integer
     directions = {cs.KEY_RIGHT:1, ord('d'):1, cs.KEY_LEFT:-1, ord('a'):-1,
                   cs.KEY_UP:2, ord('w'):2, cs.KEY_DOWN:-2, ord('s'):-2}
-
-    # Adding rainbow snake color schemes, variables, etc
-    for i in range(1, 8):
-        cs.init_pair(i, 0, i)
-    rainbowmode = False
-
 
     win.addch(food[0], food[1], cs.ACS_PI)
 
@@ -184,7 +225,7 @@ def game():
                 win.addch(tail[0], tail[1], ' ')        
 
             # Draw the snake
-            if rainbowmode:
+            if rainbowsnake:
                 win.addch(snake[0][0], snake[0][1], 32, cs.color_pair(random.randint(1, 7)))
             else:
                 win.addch(snake[0][0], snake[0][1], 32, cs.A_REVERSE)
@@ -217,9 +258,12 @@ def menu():
     
     selected = False
     hover = 0
+
+    screen.clear()
+    screen.addstr(1, int(cs.COLS/2) - 3, 'SNAKE', cs.A_BOLD)
+    
     """ Not selected """
     while not selected:
-        screen.addstr(1, int(cs.COLS/2) - 3, 'SNAKE', cs.A_BOLD)
 
         highlights = [0] * 5
         highlights[hover] = cs.A_REVERSE
@@ -228,29 +272,32 @@ def menu():
         screen.addstr(int(cs.LINES/2), int(cs.COLS/2) - 3, 'Guide', highlights[1])
         screen.addstr(int(cs.LINES/2) + 1, int(cs.COLS/2) - 4, 'Options', highlights[2])
         screen.addstr(int(cs.LINES/2) + 2, int(cs.COLS/2) - 6, 'High Scores', highlights[3])
+        screen.addstr(cs.LINES - 2, int(cs.COLS/2) - 4, '[] Exit', highlights[4])
 
         screen.refresh()
 
         pressed = screen.getch()
         if pressed == cs.KEY_UP:
-            hover = (hover - 1) %4
+            hover = (hover - 1) %5
         elif pressed == cs.KEY_DOWN:
-            hover = (hover + 1) %4
+            hover = (hover + 1) %5
         elif pressed == 27:
             break
         elif pressed == ord('\n'):
             selected = True
 
     """ /Not selected """
-
-    if hover == 0:
-        game()
-    elif hover == 1:
-        guide()
-    elif hover == 2:
-        options()
-    elif hover == 3:
-        highscores()
+    if selected:
+        if hover == 0:
+            game()
+        elif hover == 1:
+            guide()
+        elif hover == 2:
+            options()
+        elif hover == 3:
+            highscores()
+        elif hover == 4:
+            pass
        
         """
         Will add list of most recent n inputs -> cheat codes!!!!
@@ -261,6 +308,8 @@ def menu():
 
 ### Game Sequence, everything is prompted from the menu() call
 menu()
+
+
 
 
 ### Closing sequence, returns terminal to its original function
