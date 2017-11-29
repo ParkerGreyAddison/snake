@@ -5,6 +5,8 @@ A nice, retro-feeling game of snake in which you try to eat as many slices of pi
 
 ---
 Planned Features:
+- Fix acceleration with growth
 - Add animations to the Guide
 - Highscores: input initials, save to highscore file, display score, highscores, and rank on Game Over screen
 - Inverse Mode: all directions are switched
+- Global parameters for start length, grow length
